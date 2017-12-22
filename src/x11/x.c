@@ -51,6 +51,46 @@ struct x11_source {
 };
 
 struct x_context xctx;
+
+const char *xevent_type_to_string(int type)
+{
+        if (type == KeyPress) return "KeyPress";
+        if (type == KeyRelease) return "KeyRelease";
+        if (type == ButtonPress) return "ButtonPress";
+        if (type == ButtonRelease) return "ButtonRelease";
+        if (type == MotionNotify) return "MotionNotify";
+        if (type == EnterNotify) return "EnterNotify";
+        if (type == LeaveNotify) return "LeaveNotify";
+        if (type == FocusIn) return "FocusIn";
+        if (type == FocusOut) return "FocusOut";
+        if (type == KeymapNotify) return "KeymapNotify";
+        if (type == Expose) return "Expose";
+        if (type == GraphicsExpose) return "GraphicsExpose";
+        if (type == NoExpose) return "NoExpose";
+        if (type == VisibilityNotify) return "VisibilityNotify";
+        if (type == CreateNotify) return "CreateNotify";
+        if (type == DestroyNotify) return "DestroyNotify";
+        if (type == UnmapNotify) return "UnmapNotify";
+        if (type == MapNotify) return "MapNotify";
+        if (type == MapRequest) return "MapRequest";
+        if (type == ReparentNotify) return "ReparentNotify";
+        if (type == ConfigureNotify) return "ConfigureNotify";
+        if (type == ConfigureRequest) return "ConfigureRequest";
+        if (type == GravityNotify) return "GravityNotify";
+        if (type == ResizeRequest) return "ResizeRequest";
+        if (type == CirculateNotify) return "CirculateNotify";
+        if (type == CirculateRequest) return "CirculateRequest";
+        if (type == PropertyNotify) return "PropertyNotify";
+        if (type == SelectionClear) return "SelectionClear";
+        if (type == SelectionRequest) return "SelectionRequest";
+        if (type == SelectionNotify) return "SelectionNotify";
+        if (type == ColormapNotify) return "ColormapNotify";
+        if (type == ClientMessage) return "ClientMessage";
+        if (type == MappingNotify) return "MappingNotify";
+        if (type == GenericEvent) return "GenericEvent";
+        return "UnknownType";
+}
+
 bool dunst_grab_errored = false;
 
 static bool fullscreen_last = false;
@@ -275,7 +315,7 @@ gboolean x_mainloop_fd_dispatch(GSource *source, GSourceFunc callback, gpointer 
         unsigned int state;
         while (XPending(xctx.dpy) > 0) {
                 XNextEvent(xctx.dpy, &ev);
-
+                fprintf(stderr, "Processing event: %s\n", xevent_type_to_string(ev.type));
                 switch (ev.type) {
                 case Expose:
                         LOG_D("XEvent: processing 'Expose'");
