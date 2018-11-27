@@ -1,4 +1,3 @@
-/* copyright 2013 Sascha Kruse and contributors (see LICENSE for licensing information) */
 #ifndef DUNST_OPTION_PARSER_H
 #define DUNST_OPTION_PARSER_H
 

@@ -1,5 +1,3 @@
-/* copyright 2013 Sascha Kruse and contributors (see LICENSE for licensing information) */
-
 #ifndef DUNST_DBUS_H
 #define DUNST_DBUS_H
 

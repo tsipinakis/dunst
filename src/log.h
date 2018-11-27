@@ -1,5 +1,3 @@
-/* copyright 2013 Sascha Kruse and contributors (see LICENSE for licensing information) */
-
 #include <glib.h>
 #include <stdbool.h>
 #include <stdlib.h>

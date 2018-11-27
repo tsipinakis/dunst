@@ -1,5 +1,3 @@
-/* copyright 2013 Sascha Kruse and contributors (see LICENSE for licensing information) */
-
 #include "option_parser.h"
 
 #include <glib.h>
