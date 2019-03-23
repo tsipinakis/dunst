@@ -367,7 +367,9 @@ gboolean x_mainloop_fd_dispatch(GSource *source, GSourceFunc callback, gpointer 
                         }
                         break;
                 default:
-                        if (!screen_check_event(&ev)) {
+                        if (screen_check_event(&ev)) {
+                                draw();
+                        } else {
                                 LOG_D("XEvent: Ignoring '%d'", ev.type);
                         }
 
