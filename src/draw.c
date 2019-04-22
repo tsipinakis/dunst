@@ -235,9 +235,11 @@ static struct dimensions calculate_dimensions(GSList *layouts)
 static PangoLayout *layout_create(cairo_t *c)
 {
         struct screen_info *screen = get_active_screen();
+        double dpi = screen_dpi_get(screen);
+        LOG_D("Using DPI: %lf", dpi);
 
         PangoContext *context = pango_cairo_create_context(c);
-        pango_cairo_context_set_resolution(context, screen_dpi_get(screen));
+        pango_cairo_context_set_resolution(context, dpi);
 
         PangoLayout *layout = pango_layout_new(context);
 
