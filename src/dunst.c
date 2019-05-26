@@ -75,9 +75,8 @@ static gboolean run(void *data)
         bool active = queues_length_displayed() > 0;
 
         if (active) {
-                // Call draw before showing the window to avoid flickering
-                draw();
                 x_win_show(win);
+                draw();
         } else {
                 x_win_hide(win);
         }
