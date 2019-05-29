@@ -591,6 +591,8 @@ static struct dimensions layout_render(cairo_surface_t *srf,
 static void calc_window_pos(int width, int height, int *ret_x, int *ret_y)
 {
         struct screen_info *scr = get_active_screen();
+        LOG_D("calc_window_pos: w: %d, h: %d, scr->x: %d, scr->y: %d, scr->w: %d, scr->h: %d, geom.x: %d, geom.y: %d",
+                width, height, scr->x, scr->y, scr->w, scr->h, settings.geometry.x, settings.geometry.y);
 
         if (ret_x) {
                 if (settings.geometry.negative_x) {

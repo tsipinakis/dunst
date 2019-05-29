@@ -69,6 +69,8 @@ static void x_handle_click(XEvent ev);
 
 static void x_win_move(struct window_x11 *win, int x, int y, int width, int height)
 {
+        LOG_D("x_win_move: (x,y,w,h): %d, %d, %d, %d", x, y, width, height);
+
         /* move and resize */
         if (x != win->dim.x || y != win->dim.y) {
                 XMoveWindow(xctx.dpy, win->xwin, x, y);
