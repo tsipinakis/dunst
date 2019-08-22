@@ -134,20 +134,24 @@ static bool queues_notification_is_finished(struct notification *n, struct dunst
 {
         assert(n);
 
+        LOG_D("queues::queues_notification_is_finished: skip_display: %s, redisplayed: %s", BOOL2STR(n->skip_display), BOOL2STR(n->redisplayed));
         if (n->skip_display && !n->redisplayed)
                 return true;
 
+        LOG_D("queues::queues_notification_is_finished: timeout: %ld", n->timeout);
         if (n->timeout == 0) // sticky
                 return false;
 
         bool is_idle = status.fullscreen ? false : status.idle;
 
+        LOG_D("queues::queues_notification_is_finished: is_idle: %s, transient: %s", BOOL2STR(is_idle), BOOL2STR(n->transient));
         /* don't timeout when user is idle */
         if (is_idle && !n->transient) {
                 n->start = time_monotonic_now();
                 return false;
         }
 
+        LOG_D("queues::queues_notification_is_finished: time now=%ld, start=%ld, timeout=%ld", time_monotonic_now(), n->start, n->timeout);
         /* remove old message */
         if (time_monotonic_now() - n->start > n->timeout) {
                 return true;
@@ -384,18 +388,23 @@ void queues_update(struct dunst_status status)
         /* Move back all notifications, which aren't eligible to get shown anymore
          * Will move the notifications back to waiting, if dunst isn't running or fullscreen
          * and notifications is not eligible to get shown anymore */
+        LOG_D("queues::queues_update: Checking for timeouts/pushbacks");
         iter = g_queue_peek_head_link(displayed);
         while (iter) {
                 struct notification *n = iter->data;
                 nextiter = iter->next;
 
+                LOG_D("queues::queues_update: Evaluating : id: %d summary: %s", n->id, n->summary);
+
                 if (queues_notification_is_finished(n, status)){
+                        LOG_D("queues::queues_update: Closing %d", n->id);
                         queues_notification_close(n, REASON_TIME);
                         iter = nextiter;
                         continue;
                 }
 
                 if (!queues_notification_is_ready(n, status, true)) {
+                        LOG_D("queues:queues_update: Pushback %d", n->id);
                         g_queue_delete_link(displayed, iter);
                         g_queue_insert_sorted(waiting, n, notification_cmp_data, NULL);
                         iter = nextiter;
@@ -416,22 +425,29 @@ void queues_update(struct dunst_status status)
                 cur_displayed_limit = settings.geometry.h;
 
         /* move notifications from queue to displayed */
+        LOG_D("queues::queues_update: waiting -> display");
         iter = g_queue_peek_head_link(waiting);
         while (displayed->length < cur_displayed_limit && iter) {
                 struct notification *n = iter->data;
                 nextiter = iter->next;
 
+                LOG_D("queues::queues_update: Evaluating : id: %d summary: %s", n->id, n->summary);
+
                 ASSERT_OR_RET(n,);
 
                 if (!queues_notification_is_ready(n, status, false)) {
+                        LOG_D("queues::queues_update: Not ready, skipping");
                         iter = nextiter;
                         continue;
                 }
 
+
                 n->start = time_monotonic_now();
+                LOG_D("queues::queues_update: Start time=%ld", n->start);
                 notification_run_script(n);
 
                 if (n->skip_display && !n->redisplayed) {
+                        LOG_D("queues::queues_update: Marked as skip_display, closing");
                         queues_notification_close(n, REASON_USER);
                 } else {
                         g_queue_delete_link(waiting, iter);

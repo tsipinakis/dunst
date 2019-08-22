@@ -33,12 +33,15 @@ void dunst_status(const enum dunst_status_field field,
 {
         switch (field) {
         case S_FULLSCREEN:
+                LOG_D("dunst::dunst_status: S_FULLSCREEN: %s", BOOL2STR(value));
                 status.fullscreen = value;
                 break;
         case S_IDLE:
+                LOG_D("dunst::dunst_status: S_IDLE: %s", BOOL2STR(value));
                 status.idle = value;
                 break;
         case S_RUNNING:
+                LOG_D("dunst::dunst_status: S_RUNNING: %s", BOOL2STR(value));
                 status.running = value;
                 break;
         default:
@@ -65,7 +68,7 @@ static gboolean run(void *data)
 {
         static gint64 next_timeout = 0;
 
-        LOG_D("RUN");
+        LOG_D("dunst::run: Starting run at %ld", time_monotonic_now());
 
         dunst_status(S_FULLSCREEN, have_fullscreen_window());
         dunst_status(S_IDLE, x_is_idle());
@@ -87,8 +90,11 @@ static gboolean run(void *data)
                 gint64 sleep = queues_get_next_datachange(now);
                 gint64 timeout_at = now + sleep;
 
+                LOG_D("run: Preparing for sleep. now=%ld, next_datachange=%ld -- next_timeout: %ld", now, sleep, next_timeout);
+
                 if (sleep >= 0) {
                         if (next_timeout < now || timeout_at < next_timeout) {
+                                LOG_D("Sleeping for %ldms", sleep/1000);
                                 g_timeout_add(sleep/1000, run, NULL);
                                 next_timeout = timeout_at;
                         }
@@ -105,6 +111,7 @@ static gboolean run(void *data)
 
 gboolean pause_signal(gpointer data)
 {
+        LOG_D("Received pause signal");
         dunst_status(S_RUNNING, false);
         wake_up();
 
@@ -113,6 +120,7 @@ gboolean pause_signal(gpointer data)
 
 gboolean unpause_signal(gpointer data)
 {
+        LOG_D("Received unpause signal");
         dunst_status(S_RUNNING, true);
         wake_up();
 
@@ -121,6 +129,7 @@ gboolean unpause_signal(gpointer data)
 
 gboolean quit_signal(gpointer data)
 {
+        LOG_D("Received quit signal");
         g_main_loop_quit(mainloop);
 
         return G_SOURCE_CONTINUE;

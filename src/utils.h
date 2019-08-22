@@ -16,6 +16,8 @@
 //! Test if string a and b are the same case-insensitively
 #define STR_CASEQ(a, b) (strcasecmp(a, b) == 0)
 
+#define BOOL2STR(b) ((b) ? "true" : "false")
+
 //! Assert that expr evaluates to true, if not return with val
 #define ASSERT_OR_RET(expr, val) if (!(expr)) return val;
 

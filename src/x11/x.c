@@ -712,8 +712,9 @@ void x_win_destroy(struct window_x11 *win)
 void x_win_show(struct window_x11 *win)
 {
         /* window is already mapped or there's nothing to show */
-        if (win->visible)
-                return;
+        ASSERT_OR_RET(!win->visible,)
+
+        LOG_D("x11:x:x_win_show showing");
 
         x_shortcut_grab(&settings.close_ks);
         x_shortcut_grab(&settings.close_all_ks);
@@ -744,6 +745,7 @@ void x_win_show(struct window_x11 *win)
 void x_win_hide(struct window_x11 *win)
 {
         ASSERT_OR_RET(win->visible,);
+        LOG_D("x11:x:x_win_show hiding");
 
         x_shortcut_ungrab(&settings.close_ks);
         x_shortcut_ungrab(&settings.close_all_ks);
